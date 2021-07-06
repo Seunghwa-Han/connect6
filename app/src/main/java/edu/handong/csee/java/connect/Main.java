@@ -18,13 +18,13 @@ public class Main {
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-//				try {
-//					Main window = new Main();
-//					window.frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-				int[][] test = new int[19][19];
+				try {
+					Main window = new Main();
+					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+//				int[][] test = new int[19][19];
 				
 //				test[1][0] =1;
 //				test[2][0] =1;
@@ -69,22 +69,19 @@ public class Main {
 //				test[2][16] =1;
 				
 				
-				test[1][0]=1;
-				test[2][0]=1;
-				test[3][0]=1;
-				test[4][0]=1;
-				
-				test[3][1]=1;
-				test[3][2]=1;
-				test[3][3]=1;
-				
-				test[5][1]=1;
-				test[5][2]=1;
-				test[5][3]=1;
-				test[5][4]=1;
-				
-				Baduk t = new Baduk();
-				t.detectMyHorizentalThreat(test);
+//				test[1][0]=1;
+//				test[2][0]=1;
+//				test[3][0]=1;
+//				test[4][0]=1;
+//				
+//				test[3][1]=1;
+//				test[3][2]=1;
+//				test[3][3]=1;
+//				
+//				test[5][1]=1;
+//				test[5][2]=1;
+//				test[5][3]=1;
+//				test[5][4]=1;
 			}
 		});
 	}
@@ -115,8 +112,6 @@ public class Main {
 
 		top.add(menu);
 		frame.getContentPane().add(top);
-	
-		
 		
 	}
 
