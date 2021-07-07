@@ -48,7 +48,7 @@ public class Util {
 			else if(rand == 2) {
 				secondY = firstY;
 			}
-			if(secondY>=8 && secondY<=10 && !(secondX!=9 &&secondY!=9) && !(secondX!=firstX &&secondY!=firstY))
+			if(secondY>=8 && secondY<=10 && !(secondX==9 &&secondY==9) && !(secondX==firstX &&secondY==firstY))
 				break;
 		}
 		System.out.println(firstX +" "+firstY+"        "+secondX+" "+secondY);
