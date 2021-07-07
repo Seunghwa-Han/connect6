@@ -260,6 +260,18 @@ public class MenuPanel extends JPanel implements ActionListener {
 								stone1.setVisible(false);
 								stone2.setVisible(false);
 								menu.revalidate();
+								
+								Util.comWhiteFirst(board.vcCom, board.dont);
+								board.repaint();
+								
+								Timer timer = new Timer(1000, event -> {
+									board.turn = 1;
+									MenuPanel.turnLabel.setText("내 차례");
+									MenuPanel.stone1.setVisible(true);
+									MenuPanel.stone2.setVisible(true);
+								});
+								timer.setRepeats(false);
+								timer.start();
 							} else {
 								board.stoneMode = 2; // 내가 백, 컴퓨터가 흑
 								board.turn = 1; // 내 차례

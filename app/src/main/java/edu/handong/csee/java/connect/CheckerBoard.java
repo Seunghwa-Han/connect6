@@ -140,7 +140,7 @@ public class CheckerBoard extends JPanel implements MouseListener, ActionListene
 				MenuPanel.txt.setText("착수 금지점 모드");
 				if (((int) (Math.random() * 100)) % 2 == 0) {
 					stoneMode = 1; // 내가 흑, 컴퓨터가 백
-					turn = 2;   // 컴퓨터 차례
+//					turn = 2;   // 컴퓨터 차례
 					MenuPanel.turnLabel.setText("컴퓨터 차례");
 					MenuPanel.myStone.setText("내 돌: 검정돌");
 					result[9][9] = 1;
@@ -150,6 +150,18 @@ public class CheckerBoard extends JPanel implements MouseListener, ActionListene
 					MenuPanel.stone2.setIcon(new ImageIcon(img.black2));
 					MenuPanel.stone1.setVisible(false);
 					MenuPanel.stone2.setVisible(false);
+					
+					Util.comWhiteFirst(vcCom, dont);
+					repaint();
+					
+					Timer timer = new Timer(1000, event -> {
+						turn = 1;
+						MenuPanel.turnLabel.setText("내 차례");
+						MenuPanel.stone1.setVisible(true);
+						MenuPanel.stone2.setVisible(true);
+					});
+					timer.setRepeats(false);
+					timer.start();
 				} else {
 					stoneMode = 2; // 내가 백, 컴퓨터가 흑
 					turn = 1; // 내 차례
