@@ -124,7 +124,7 @@ public class MenuPanel extends JPanel implements ActionListener {
 			btnDontRandom.addActionListener(this);
 			btnDontSelf.addActionListener(this);
 			JOptionPane.showConfirmDialog(null, "착수 금지점 설정 모드를 선택하세요!", "착수 금지점 세팅", JOptionPane.YES_NO_OPTION);
-		} else if (btn == btnDontRandom) {
+		} else if (btn == btnDontRandom) {   //착수금지점 랜덤 설정 
 			btnDontRandom.removeActionListener(this);
 			btnDontSelf.removeActionListener(this);
 			btnDontSelf.setForeground(Color.LIGHT_GRAY);
@@ -149,11 +149,9 @@ public class MenuPanel extends JPanel implements ActionListener {
 			}
 
 			if (((int) (Math.random() * 100)) % 2 == 0) {
-				board.stoneMode = 1; // 내가 흑, 컴퓨터가 백
-//				board.turn = 2;   // 컴퓨터 차례
+				board.stoneMode = 1; // person black, computer white
 				turnLabel.setText("컴퓨터 차례");
 				myStone.setText("내 돌: 검정돌");
-//				JOptionPane.showConfirmDialog(null,"검정돌로 플레이하세요.", "게임 시작",JOptionPane.YES_NO_OPTION);
 				board.result[9][9] = 1;
 				board.vc.add(new Point(401, 402));
 
@@ -162,24 +160,13 @@ public class MenuPanel extends JPanel implements ActionListener {
 				stone1.setVisible(false);
 				stone2.setVisible(false);
 				
-				Util.comWhiteFirst(board.vcCom, board.dont);
-				board.repaint();
+				Util.comWhiteFirst(board.vcCom, board.dont, board.result);
 				
-				Timer timer = new Timer(1000, event -> {
-					board.turn = 1;
-					MenuPanel.turnLabel.setText("내 차례");
-					MenuPanel.stone1.setVisible(true);
-					MenuPanel.stone2.setVisible(true);
-				});
-				timer.setRepeats(false);
-				timer.start();
-
+				board.timer.start();
 			} else {
 				board.stoneMode = 2; // 내가 백, 컴퓨터가 흑
-				board.turn = 1; // 내 차례
 				turnLabel.setText("내 차례");
 				myStone.setText("내 돌: 하얀돌");
-//				JOptionPane.showConfirmDialog(null,"하얀돌로 플레이하세요.", "게임 시작",JOptionPane.YES_NO_OPTION);
 				board.result[9][9] = 2;
 				board.vcCom.add(new Point(401, 402));
 
@@ -196,7 +183,6 @@ public class MenuPanel extends JPanel implements ActionListener {
 			btnDontRandom.removeActionListener(this);
 			btnDontSelf.removeActionListener(this);
 			btnDontRandom.setForeground(Color.LIGHT_GRAY);
-//			btnGameState.setText("게임중~~");
 
 			prohibition chooseDontNum = new prohibition();
 			chooseDontNum.setVisible(true);
@@ -249,7 +235,6 @@ public class MenuPanel extends JPanel implements ActionListener {
 						} else { // 착수 금지점 0개
 							if (((int) (Math.random() * 100)) % 2 == 0) {
 								board.stoneMode = 1; // 내가 흑, 컴퓨터가 백
-								board.turn = 2; // 컴퓨터 차례
 								turnLabel.setText("컴퓨터 차례");
 								myStone.setText("내 돌: 검정돌");
 								board.result[9][9] = 1;
@@ -261,20 +246,12 @@ public class MenuPanel extends JPanel implements ActionListener {
 								stone2.setVisible(false);
 								menu.revalidate();
 								
-								Util.comWhiteFirst(board.vcCom, board.dont);
+								Util.comWhiteFirst(board.vcCom, board.dont, board.result);
 								board.repaint();
 								
-								Timer timer = new Timer(1000, event -> {
-									board.turn = 1;
-									MenuPanel.turnLabel.setText("내 차례");
-									MenuPanel.stone1.setVisible(true);
-									MenuPanel.stone2.setVisible(true);
-								});
-								timer.setRepeats(false);
-								timer.start();
+								board.timer.start();
 							} else {
 								board.stoneMode = 2; // 내가 백, 컴퓨터가 흑
-								board.turn = 1; // 내 차례
 								turnLabel.setText("내 차례");
 								myStone.setText("내 돌: 하얀돌");
 								board.result[9][9] = 2;

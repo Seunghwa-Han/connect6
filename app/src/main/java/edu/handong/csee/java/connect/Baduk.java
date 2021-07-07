@@ -11,7 +11,7 @@ public class Baduk {
 	public Baduk() {
 		
 	}
-
+	
 	public void detectMyHorizentalThreat(int[][] now) { // 가로
 		int[][] threat = new int[19][19];
 		/*
@@ -145,5 +145,7 @@ public class Baduk {
 			System.out.println();
 		}
 	}
+	
+	
 
 }
