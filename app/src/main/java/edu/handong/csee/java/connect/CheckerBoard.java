@@ -238,6 +238,10 @@ public class CheckerBoard extends JPanel implements MouseListener, ActionListene
 				MenuPanel.stone1.setVisible(false);
 //				turn = 2;
 				MenuPanel.turnLabel.setText("컴퓨터 차례");
+				
+				//여기에 컴퓨터 로직 결정 
+				
+				
 				 Timer timer = new Timer(2000, event -> {
 						MenuPanel.turnLabel.setText("내 차례");
 						MenuPanel.stone1.setVisible(true);

@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class Util {
 	
-	public static void comWhiteFirst(ArrayList<Point> vcCom, ArrayList<Point> dont) {  //checkboard의 result를 인자로 받아옴 
+	public static void comWhiteFirst(ArrayList<Point> vcCom, ArrayList<Point> dont) {
 		
 		Random rnd = new Random();
 		int firstX=0,firstY=0;
@@ -54,5 +54,9 @@ public class Util {
 		System.out.println(firstX +" "+firstY+"        "+secondX+" "+secondY);
 		vcCom.add(new Point((int)(firstX*41.7+26), (int)(firstY*41.6+28)));
 		vcCom.add(new Point((int)(secondX*41.7+26), (int)(secondY*41.6+28)));
+	}
+	
+	public static void comBlackFirst(ArrayList<Point> vcCom, ArrayList<Point> dont) {
+		
 	}
 }
