@@ -191,9 +191,9 @@ public class CheckerBoard extends JPanel implements MouseListener, ActionListene
 			vc.add(new Point((int)x,(int)y));
 			MenuPanel.stone2.setVisible(false);
 		}
-		else {  //컴퓨터 차례 일때는 vcCom에 add
-			vcCom.add(new Point((int)x,(int)y));
-		}
+//		else {  //컴퓨터 차례 일때는 vcCom에 add
+//			vcCom.add(new Point((int)x,(int)y));
+//		}
 		repaint();
 		
 		int gameResult = badukWin(j,i);
@@ -224,15 +224,22 @@ public class CheckerBoard extends JPanel implements MouseListener, ActionListene
 		if(++click%2==0) {  //바둑돌 놓은 횟수 증가하고, 바둑돌 놓은 횟수가 2의 배수이면 turn 변경 
 			if(turn == 1) {  //내 턴이었으면 컴퓨터 턴으로 변경 
 				MenuPanel.stone1.setVisible(false);
-				turn = 2;
+//				turn = 2;
 				MenuPanel.turnLabel.setText("컴퓨터 차례");
+				 Timer timer = new Timer(2000, event -> {
+						MenuPanel.turnLabel.setText("내 차례");
+						MenuPanel.stone1.setVisible(true);
+						MenuPanel.stone2.setVisible(true);
+		            });
+		            timer.setRepeats(false);
+		            timer.start();
 			}
-			else {  //컴퓨터 턴이었으면 내 턴으로 변경 
-				turn =1;
-				MenuPanel.turnLabel.setText("내 차례");
-				MenuPanel.stone1.setVisible(true);
-				MenuPanel.stone2.setVisible(true);
-			}
+//			else {  //컴퓨터 턴이었으면 내 턴으로 변경 
+//				turn =1;
+//				MenuPanel.turnLabel.setText("내 차례");
+//				MenuPanel.stone1.setVisible(true);
+//				MenuPanel.stone2.setVisible(true);
+//			}
 		}
 //		for (double x = 26; x <= 777; x += 41.7) {
 //			for (double y = 28; y <= 777; y += 41.6) {
