@@ -144,7 +144,7 @@ public class CheckerBoard extends JPanel implements MouseListener, ActionListene
 					MenuPanel.stone2.setVisible(false);
 
 					Util.comWhiteFirst(vcCom, dont, result);
-					timer.restart();
+					timer.start();
 				} else {
 					stoneMode = 2; // 내가 백, 컴퓨터가 흑
 					MenuPanel.turnLabel.setText("내 차례");
@@ -188,8 +188,14 @@ public class CheckerBoard extends JPanel implements MouseListener, ActionListene
 			MenuPanel.stone1.setVisible(false);
 			MenuPanel.turnLabel.setText("컴퓨터 차례");
 			
-			int winNum = AttackFirst.detectThreatNum(result);
-			System.out.println("winNum "+winNum);
+			if(vcCom.size()==1) {
+				Util.comBlackSecond(vcCom, result, dont);
+				repaint();
+				return;
+			}
+			
+			int winNum = AttackFirst.detectThreatNum(result);     //이길 수 있으면 이기면 됨 
+			System.out.println("winNum "+winNum);  
 			if(winNum==1) {
 				int[][] threat = AttackFirst.detectThreat(result);
 				for(int m=0; m<19; m++) {
@@ -197,7 +203,7 @@ public class CheckerBoard extends JPanel implements MouseListener, ActionListene
 						if(threat[m][n]<0) {
 							vcCom.add(new Point((int) (n * 41.7 + 26), (int) (m * 41.6 + 28)));
 							result[m][n] = 2;
-							decideWinner(m,n);
+							decideWinnerCom(m,n);
 						}
 					}
 				}
@@ -221,7 +227,7 @@ public class CheckerBoard extends JPanel implements MouseListener, ActionListene
 							a++;
 							vcCom.add(new Point((int) (n * 41.7 + 26), (int) (m * 41.6 + 28)));
 							result[m][n] = 2;
-							decideWinner(m,n);
+							decideWinnerCom(m,n);
 							if(a==2) break;
 						}
 					}
@@ -229,7 +235,7 @@ public class CheckerBoard extends JPanel implements MouseListener, ActionListene
 				return;
 			}
 			
-			//수비 
+			//수비하고 공격  
 			int threatNum = Threats.detectThreatNum(result);
 			System.out.println("threat: " + threatNum);
 			if (threatNum == 2) {  //2개이면 2개 다 막기 
@@ -260,7 +266,8 @@ public class CheckerBoard extends JPanel implements MouseListener, ActionListene
 				vcCom.add(new Point((int) (maxN * 41.7 + 26), (int) (maxM * 41.6 + 28)));
 				result[maxM][maxN] = 2;
 				repaint();
-			} else if (threatNum == 1) {  //1개이면 1개 막기 
+			} else if (threatNum == 1) {  //threat 1개. 돌 1개 남음 
+				
 				int[][] threat = Threats.detectThreat(result);
 				int maxM = 0, maxN = 0;
 				for (int m = 0; m < 19; m++) {
@@ -274,32 +281,163 @@ public class CheckerBoard extends JPanel implements MouseListener, ActionListene
 				vcCom.add(new Point((int) (maxN * 41.7 + 26), (int) (maxM * 41.6 + 28)));
 				result[maxM][maxN] = 2;
 				
-				Attack.put_count=1;
-				Attack.putStone(result, vcCom);
-				if(Attack.put_count==1) {  //3개 포함 공백도 없고 2개 포함 공백도 없음 
-					System.out.println("1");
-					
-					//
-				}
-				else if(Attack.put_count==0){  //공백 3개 또는 공백 2개 처리함 
-					System.out.println("1_");
+				PrimaryAttack.put_count=1;   //최우선 공격하고 돌 남으면 밑에거 하기 
+				PrimaryAttack.detectPrimaryThreat(vcCom, result);
+				
+				if(PrimaryAttack.put_count == 1) {
+					PrimaryAttack.put_count=0;
+					Attack.put_count=1;
+					Attack.putStone(result, vcCom);
+					if(Attack.put_count==1) {  //3개 포함 공백도 없고, 2개 포함 공백도 없음 
+						//예측막기 
+						
+						Protect3.put_count=1;
+						Protect3.protectThree(result, vcCom);
+						if(Protect3.put_count==1) {  //33막기 없음 
+							NormAttack.put_count=1;
+							NormAttack.putStone(result, vcCom);
+							if(NormAttack.put_count==1) { 
+								Util.putStoneRandomly1(vcCom, result);  //랜덤 1개 두기 
+							}
+							else System.out.println("6.5");
+						}
+						else System.out.println("6");
+					}
+					else if(Attack.put_count==0){  //공백 3개 또는 공백 2개 처리함 
+						System.out.println("6_");
+					}
 				}
 				repaint();
 			}
-			else if(threatNum==0) {
-				Attack.put_count=0;
-				Attack.putStone(result, vcCom);  //빈칸포함 2개 채우기, 빈칸포함 3개 채우기 
-				if(Attack.put_count==1) {  //빈칸 포함 3개만 있음. 빈칸 포함 2개는 없음 
-					System.out.println("2");
-					
+			else if(threatNum==0) {  //threat 개수 0개이면 
+				
+				int size1 = vcCom.size();
+				PrimaryAttack.put_count=0;   //최우선 공격하고 돌 남으면 밑에거 하기 
+				PrimaryAttack.detectPrimaryThreat(vcCom, result);
+				
+				if(PrimaryAttack.put_count==1) { //돌 1개 남음 
+					PrimaryAttack.put_count = 0;
+					Attack.put_count=1;
+					Attack.putStone(result, vcCom);  
+					if(Attack.put_count==1) {  //돌 1개 남음 
+						
+						//예측막기
+						PrimaryProtect.put_count=1;
+						PrimaryProtect.detectPrimaryProtect(vcCom, result);
+						
+						if(PrimaryProtect.put_count==1) {
+							Protect3.put_count =1;
+							Protect3.protectThree(result, vcCom);
+							if(Protect3.put_count==1) {  //33막기 없음. 돌 1개 남음 
+								NormAttack.put_count=1;
+								NormAttack.putStone(result, vcCom);
+								if(NormAttack.put_count==1) {  
+									Util.putStoneRandomly1(vcCom, result);  //랜덤 1개 두기 
+								}else System.out.println("7.5");
+							}
+							else System.out.println("7");
+						}
+						else System.out.println("0.7"); 
+		
+					}
 				}
-				else if(Attack.put_count==0) {  //빈칸 포함 2개 또는 빈칸포함 3개 있어서 처리 
-					System.out.println("3");
-					
-					//
+				else if(PrimaryAttack.put_count==0) {
+					if(vcCom.size()>size1) {  //돌 2개 다 썼음 끝. 
+						System.out.println("5");
+					}else {  //돌 하나도 안썼음. 돌2개 남음 
+						int sizeBeforeAttack = vcCom.size();
+						Attack.put_count=0;
+						Attack.putStone(result, vcCom);  
+						if(Attack.put_count==1) {  //빈칸포함3, 빈칸포함2 공격 1개 쓰고 1개 남음. 
+							//예측막기
+							PrimaryProtect.put_count=1;
+							PrimaryProtect.detectPrimaryProtect(vcCom, result);
+							
+							if(PrimaryProtect.put_count==1) {
+								Protect3.put_count = 1;
+								Protect3.protectThree(result, vcCom);
+								if(Protect3.put_count==1) {  //33막기 없음. 돌1개 남음 
+									NormAttack.put_count=1;
+									NormAttack.putStone(result, vcCom);
+									if(NormAttack.put_count==1) {  //돌 1개 남음 
+										Util.putStoneRandomly1(vcCom, result);  //랜덤두기 
+									}
+									else System.out.println("8.5");
+								}else System.out.println("8");
+							}
+							else System.out.println("0.8");
+							
+						}
+						else if(Attack.put_count==0) {
+							if(vcCom.size()>sizeBeforeAttack) { // 돌 2개 다 썼음. 끝 
+								System.out.println("3");
+							}
+							else { //빈칸 포함 3개 없음, 빈칸 포함 2개 없음. 돌 2개 남음 
+								
+								//예측막기
+								PrimaryProtect.put_count=0;
+								PrimaryProtect.detectPrimaryProtect(vcCom, result);
+								
+								if(PrimaryProtect.put_count==1) {  //돌 1개 남음 
+									Protect3.put_count=1;
+									Protect3.protectThree(result, vcCom);
+									if(Protect3.put_count==1) {  //돌 1개 남음 
+										NormAttack.put_count=1;
+										NormAttack.putStone(result, vcCom);
+										if(NormAttack.put_count==1) {
+											Util.putStoneRandomly1(vcCom, result);  //랜덤두기 
+										}else 
+											System.out.println("4");
+									}else 
+										System.out.println("11");
+								}
+								else if(PrimaryProtect.put_count==0) { //돌 2개 남음 
+									int sizeBeforeProtect = vcCom.size();
+									Protect3.put_count=0;
+									Protect3.protectThree(result, vcCom);
+									if(Protect3.put_count==1) { //돌 1개 남음 
+										NormAttack.put_count=1;
+										NormAttack.putStone(result, vcCom);
+										if(NormAttack.put_count==1) {
+											Util.putStoneRandomly1(vcCom, result);  //랜덤두기 
+										}else 
+											System.out.println("4");
+									}
+									else if(Protect3.put_count==0) {
+										if(vcCom.size()>sizeBeforeProtect) {  //돌 2개 다 썼음. 끝 
+											System.out.println("9");
+										}else {  //돌 2개 남음 (33없음)
+											int sizeBeforeNA = vcCom.size();
+											NormAttack.put_count=0;
+											NormAttack.putStone(result, vcCom);
+											if(NormAttack.put_count==1) {  //돌 1개 남음 
+												//랜덤 두기 
+												Util.putStoneRandomly1(vcCom, result);
+												System.out.println("9.5");
+												
+											}else if(NormAttack.put_count==0) {
+												if(vcCom.size()>sizeBeforeNA) { //돌 다 씀.
+													System.out.println("10");
+												}else {  //돌 2개 남음 
+													//랜덤 두기 
+													Util.putStoneRandomly2(vcCom, result);
+													System.out.println("10.5");
+												}
+											}
+										}
+									}
+									
+								}
+								
+								
+							}
+						}
+					}
 				}
+				
+				repaint();
 			}
-			else {  // threatNum>2
+			else {  // threatNum>2 ...
 				JOptionPane.showConfirmDialog(null, "threat3개 이상이어서 유저가 이김 ...", "Lose", JOptionPane.WARNING_MESSAGE);
 			}
 			timer.restart();
@@ -439,6 +577,8 @@ public class CheckerBoard extends JPanel implements MouseListener, ActionListene
 			removeMouseListener(this);
 			return;
 		}
+	}
+	public void decideWinnerCom(int j, int i) {
 		if (badukWin(j, i, 2) == 2) { 
 			MenuPanel.btnGameState.setText("다시 시작");
 			MenuPanel.winLoseLabel.setText(Integer.toString(gameWinNum).concat("승 ")

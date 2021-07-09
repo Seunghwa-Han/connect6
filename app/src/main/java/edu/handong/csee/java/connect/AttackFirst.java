@@ -5,7 +5,11 @@ package edu.handong.csee.java.connect;
  *
  */
 public class AttackFirst {
-//2 컴퓨터 세는 거 
+//2 컴퓨터(나)의 공격 세는 거 
+	
+	static int num_mine = 0;
+	static int num_empty=0;
+	
 	public static int detectThreatNum(int[][] now) {
 		int threatNum = 0;
 		int[][] threat = new int[19][19];
@@ -56,7 +60,6 @@ public class AttackFirst {
 		}
 		return threat;
 	}
-	
 	
 	
 	public static void detectMyHorizentalThreat(int[][] now, int[][] threat) { // 가로
@@ -172,10 +175,7 @@ public class AttackFirst {
 //			System.out.println();
 //		}
 	}
-	
-	
-	static int num_mine = 0;
-	static int num_empty=0;
+
 	
 	public static void DMT_CRI(int[][] ar) {
 		
@@ -255,7 +255,6 @@ public class AttackFirst {
 		}
 	}
 
-	
 	public static int DMT(int[][] ar) {
 		
 		int i = 0 ;
@@ -567,7 +566,6 @@ public class AttackFirst {
 		
 	}
 	
-
 }
 
 

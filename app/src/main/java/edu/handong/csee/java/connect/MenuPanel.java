@@ -105,6 +105,13 @@ public class MenuPanel extends JPanel implements ActionListener {
 					.concat(Integer.toString(board.gameNum - board.gameWinNum)).concat("패"));
 			board.gameNum++;
 		} else if (btn.getText().equals("다시 시작")) {
+			board.timer.stop();
+			board.timer = new Timer(1000, event -> {
+				MenuPanel.turnLabel.setText("내 차례");
+				MenuPanel.stone1.setVisible(true);
+				MenuPanel.stone2.setVisible(true);
+			});
+			board.timer.setRepeats(false);
 			board.gameNum++;
 			board.vc.clear();
 			board.vcCom.clear();
@@ -132,6 +139,7 @@ public class MenuPanel extends JPanel implements ActionListener {
 
 			Random rnd = new Random();
 			int dontNum = rnd.nextInt(6);
+			System.out.println("착수금지점 개수 "+dontNum);
 
 			for (int i = 0; i < dontNum; i++) {
 				int x = rnd.nextInt(19);
